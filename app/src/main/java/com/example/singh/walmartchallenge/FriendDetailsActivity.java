@@ -3,6 +3,8 @@ package com.example.singh.walmartchallenge;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.example.singh.walmartchallenge.model.profile.FbProfile;
 import com.example.singh.walmartchallenge.utility.RetrofitHelper;
 import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,6 +76,27 @@ public class FriendDetailsActivity extends AppCompatActivity {
         tvGender.setText(profile.getGender());
         tvEmail.setText(profile.getEmail());
         Glide.with(this).load(profile.getPicture().getData().getUrl()).into(imgUserFriend);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_logout) {
+            LoginManager.getInstance().logOut();
+            Intent intent = new Intent(FriendDetailsActivity.this,LoginActivity.class );
+            startActivity(intent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

@@ -6,7 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import com.example.singh.walmartchallenge.utility.FriendListAdapter;
 import com.example.singh.walmartchallenge.utility.RetrofitHelper;
 import com.facebook.AccessToken;
 import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,6 @@ public class FriendsListActivity extends AppCompatActivity {
     FriendListAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
     Profile userProfile;
-    private static final String TAG = "FriendListActivity";
 
     @BindView(R.id.tvName)
     TextView tvName;
@@ -79,7 +80,6 @@ public class FriendsListActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, "onError: " + e.toString());
                     }
 
                     @Override
@@ -104,9 +104,7 @@ public class FriendsListActivity extends AppCompatActivity {
         tvName.setText(userProfile.getName());
         Glide.with(this).load(userProfile.getProfilePictureUri(50, 50)).into(imgProfile);
 
-
     }
-
 
     @Override
     public void onBackPressed()
@@ -124,4 +122,27 @@ public class FriendsListActivity extends AppCompatActivity {
             backButtonCount++;
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_logout) {
+
+            LoginManager.getInstance().logOut();
+            Intent intent = new Intent(FriendsListActivity.this,LoginActivity.class );
+            startActivity(intent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
