@@ -6,8 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class FbProfile implements Serializable
-{
+public class FbProfile implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -33,6 +32,27 @@ public class FbProfile implements Serializable
     @SerializedName("last_name")
     @Expose
     private String lastName;
+
+
+    @SerializedName("birthday")
+    @Expose
+    private String birthday;
+
+
+    @SerializedName("email")
+    @Expose
+    private String email;
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+
     private final static long serialVersionUID = -3184530258479961710L;
 
     public String getId() {

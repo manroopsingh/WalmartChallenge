@@ -1,11 +1,13 @@
 package com.example.singh.walmartchallenge;
 
 import com.example.singh.walmartchallenge.model.friendList.Friendlist;
+import com.example.singh.walmartchallenge.model.profile.FbProfile;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -26,19 +28,26 @@ public class RetrofitHelper {
                 .build();
     }
 
-    public static Observable<Friendlist> createObs(String access_token) {
+    public static Observable<Friendlist> createListObs(String access_token) {
         Retrofit retrofit = create();
         GithubService service = retrofit.create(GithubService.class);
         return service.getListObservable(access_token);
     }
 
+    public static Observable<FbProfile> createProfileObs(String user,String access_token, String fields) {
+        Retrofit retrofit = create();
+        GithubService service = retrofit.create(GithubService.class);
+        return service.getProfileObservable(user,access_token,fields);
+    }
 
     public interface GithubService {
 
-
-        //@Header("access_token: EAAacBu47vesBAIdeZAdefIBnqGzbjlhk0B1D7VoQe6iArawpuAyv3zZByquIZBJw5OhV1rkbWZCJmLmZBVQWWgGyVpMXFqLOSkJwUj7aBieW6Q3tDd5WRQ5LDFzTrmc0HVdTFWOsOqN8DMksZCPHzf")
         @GET("/me/friends")
         rx.Observable<Friendlist> getListObservable(@Query("access_token") String access_token);
+
+        @GET("/{user}")
+        rx.Observable<FbProfile> getProfileObservable(@Path("user") String user,@Query("access_token") String access_token, @Query("fields") String fields);
+
 
 
     }

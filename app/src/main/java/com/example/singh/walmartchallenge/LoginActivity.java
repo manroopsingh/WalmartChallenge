@@ -31,11 +31,11 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setReadPermissions("user_friends");
 
 
+
         // Callback registration
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                // App code
                 Intent intent = new Intent(LoginActivity.this, FriendsListActivity.class);
                 startActivity(intent);
 
@@ -43,12 +43,10 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                // App code
             }
 
             @Override
             public void onError(FacebookException exception) {
-                // App code
             }
         });
 

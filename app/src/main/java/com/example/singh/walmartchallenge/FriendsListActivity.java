@@ -6,18 +6,20 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.singh.walmartchallenge.model.friendList.Datum;
 import com.example.singh.walmartchallenge.model.friendList.Friendlist;
 import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-
-import org.json.JSONArray;
+import com.facebook.Profile;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -27,48 +29,47 @@ public class FriendsListActivity extends AppCompatActivity {
 
     List<Datum> datumList = new ArrayList<>();
     FriendListAdapter adapter;
+    RecyclerView.LayoutManager layoutManager;
+    Profile userProfile;
     private static final String TAG = "FriendListActivity";
-    String token = "EAACEdEose0cBAPPOI19Sc3zZAYivzoZAL4fdGltvrc0cyheRiR1ZBWyDL7FAQMlFrIYSLcQ0t7DBq872aemB0iWxYlnET8UZC5dsMcHTybEydshPSMe3XKp5jeYRSyjvazp0vlTMsvf0aa28ojubQc8GZChXkae3ZAbPYjf2x8F4ZAQXY4OwY5aH6q8QZBlJdZBsZD";
 
-    String tokenFromPostman = "EAAacBu47vesBAIdeZAdefIBnqGzbjlhk0B1D7VoQe6iArawpuAyv3zZByquIZBJw5OhV1rkbWZCJmLmZBVQWWgGyVpMXFqLOSkJwUj7aBieW6Q3tDd5WRQ5LDFzTrmc0HVdTFWOsOqN8DMksZCPHzf";
+    @BindView(R.id.tvName)
+    TextView tvName;
+    @BindView(R.id.imgUserProfile)
+    ImageView imgProfile;
+    @BindView(R.id.rvFriendList)
+    RecyclerView rvFriendList;
+    @BindView(R.id.tvFriendsCount)
+    TextView tvFriendCount;
+    @BindView(R.id.tvBirthday)
+    TextView tvBirthday;
+    @BindView(R.id.tvGender)
+    TextView tvGender;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
+        ButterKnife.bind(this);
 
+        //get access token
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        Log.d(TAG, "onCreate: " + accessToken.getToken());
+        initializeRvFriendList();
+        populateRvFriendList(accessToken);
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvFriendList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
 
-        adapter = new FriendListAdapter(datumList);
+    private void populateRvFriendList(AccessToken accessToken) {
 
-        GraphRequest request = GraphRequest.newMyFriendsRequest(
-                accessToken,
-                new GraphRequest.GraphJSONArrayCallback() {
-                    @Override
-                    public void onCompleted(JSONArray array, GraphResponse response) {
-                        Log.d(TAG, "onCompleted: " + response);
-                    }
-                });
-
-        request.executeAsync();
-
-        rx.Observable<Friendlist> profileObservable = RetrofitHelper.createObs(String.valueOf(token));
+        //RxJava eases communication back from worker thread using observer-subscriber pattern
+        rx.Observable<Friendlist> profileObservable = RetrofitHelper.createListObs(String.valueOf(accessToken.getToken()));
         profileObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Friendlist>() {
                     @Override
                     public void onCompleted() {
-                        for (int i = 0; i < datumList.size(); i++) {
-                            Log.d(TAG, "onCompleted: " + datumList.get(i).getName());
-                        }
-
-                        recyclerView.setAdapter(adapter);
+                        rvFriendList.setAdapter(adapter);
                     }
 
                     @Override
@@ -78,14 +79,25 @@ public class FriendsListActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(Friendlist friendlist) {
-                        Log.d(TAG, "onNext: " + friendlist.getSummary().getTotalCount());
-
-                        datumList.addAll(friendlist.getData());
-
-
+                        setData(friendlist);
                     }
-
                 });
+    }
+
+    private void initializeRvFriendList() {
+        layoutManager = new LinearLayoutManager(getApplicationContext());
+        rvFriendList.setAdapter(adapter);
+        rvFriendList.setLayoutManager(layoutManager);
+        rvFriendList.setItemAnimator(new DefaultItemAnimator());
+        adapter = new FriendListAdapter(this, datumList);
+    }
+
+    private void setData(Friendlist friendlist) {
+        datumList.addAll(friendlist.getData());
+        userProfile = Profile.getCurrentProfile();
+        tvFriendCount.setText("Friends (" + friendlist.getSummary().getTotalCount() + ")");
+        tvName.setText(userProfile.getName());
+        Glide.with(this).load(userProfile.getProfilePictureUri(50, 50)).into(imgProfile);
 
 
     }
