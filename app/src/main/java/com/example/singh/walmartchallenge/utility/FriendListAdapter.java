@@ -1,4 +1,4 @@
-package com.example.singh.walmartchallenge;
+package com.example.singh.walmartchallenge.utility;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.singh.walmartchallenge.FriendDetailsActivity;
+import com.example.singh.walmartchallenge.R;
 import com.example.singh.walmartchallenge.model.friendList.Datum;
 
 import java.util.List;

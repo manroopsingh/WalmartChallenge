@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.singh.walmartchallenge.model.profile.FbProfile;
+import com.example.singh.walmartchallenge.utility.RetrofitHelper;
 import com.facebook.AccessToken;
 
 import butterknife.BindView;

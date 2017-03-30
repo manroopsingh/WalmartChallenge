@@ -5,8 +5,8 @@
         <!-- Customize your theme here. -->
 
         <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
-        <item name="android:editTextStyle">@style/RobotoTextViewStyle</item>
+        <item name="android:textViewStyle">@style/MyTextViewStyle</item>
+        <item name="android:editTextStyle">@style/MyTextViewStyle</item>
 
 
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -14,8 +14,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
+    <style name="MyTextViewStyle" parent="android:Widget.TextView">
         <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
 </resources>

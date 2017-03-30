@@ -1,4 +1,4 @@
-package com.example.singh.walmartchallenge;
+package com.example.singh.walmartchallenge.utility;
 
 import com.example.singh.walmartchallenge.model.friendList.Friendlist;
 import com.example.singh.walmartchallenge.model.profile.FbProfile;
